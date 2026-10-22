@@ -52,12 +52,12 @@ jobs:
             --v1-signing-enabled true \
             --v2-signing-enabled true \
             --v3-signing-enabled true \
-            --out Dslice_6.1_Signed.apk \
+            --out Dslice_6.2_Signed.apk \
             aligned.apk
 
       - name: Upload Signed APK
         uses: actions/upload-artifact@v4
         with:
           name: Dslice_Signed_APK
-          path: Dslice_6.1_Signed.apk
+          path: Dslice_6.2_Signed.apk
           if-no-files-found: error
