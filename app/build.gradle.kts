@@ -7,12 +7,6 @@ plugins {
 val signingProps = Properties()
 val signingPropsFile = rootProject.file("signing.properties")
 if (signingPropsFile.exists()) signingProps.load(signingPropsFile.inputStream())
-val releaseSigningConfigured = listOf(
-    "KEYSTORE_FILE",
-    "KEYSTORE_PASSWORD",
-    "KEY_ALIAS",
-    "KEY_PASSWORD",
-).all { !signingProps.getProperty(it).isNullOrBlank() }
 
 android {
     namespace = "df.D10slice"
@@ -26,13 +20,8 @@ android {
         applicationId = "df.D10slice"
         minSdk = 32
         targetSdk = 37
-<<<<<<< HEAD
         versionCode = 62
         versionName = "6.2"
-=======
-        versionCode = 62
-        versionName = "6.2"
->>>>>>> upstream/master
 
         ndk {
             abiFilters += listOf("arm64-v8a")
@@ -40,13 +29,11 @@ android {
     }
 
     signingConfigs {
-        if (releaseSigningConfigured) {
-            create("release") {
-                storeFile = file(signingProps.getProperty("KEYSTORE_FILE"))
-                storePassword = signingProps.getProperty("KEYSTORE_PASSWORD")
-                keyAlias = signingProps.getProperty("KEY_ALIAS")
-                keyPassword = signingProps.getProperty("KEY_PASSWORD")
-            }
+        create("release") {
+            storeFile = file(signingProps.getProperty("KEYSTORE_FILE"))
+            storePassword = signingProps.getProperty("KEYSTORE_PASSWORD")
+            keyAlias = signingProps.getProperty("KEY_ALIAS")
+            keyPassword = signingProps.getProperty("KEY_PASSWORD")
         }
     }
 
@@ -56,9 +43,7 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
         release {
-            if (releaseSigningConfigured) {
-                signingConfig = signingConfigs.getByName("release")
-            }
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
@@ -90,11 +75,10 @@ android {
 androidComponents {
     onVariants { variant ->
         variant.outputs.forEach { output ->
-            output.outputFileName.set(output.versionName.map { vn -> "Dslice_${vn}.apk" })
+            output.outputFileName.set(output.versionName.map { vn -> "DFRoot_${vn}.apk" })
         }
     }
 }
 
 dependencies {
-    implementation(libs.material)
 }
