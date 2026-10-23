@@ -20,25 +20,37 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Accept Licenses & Install NDK
-        run: |
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null 2>&1 || true
-          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "cmake;3.22.1" "ndk;28.2.13676358" > /dev/null 2>&1 || true
+      - name: Set up Android SDK & NDK
+        uses: android-actions/setup-android@v3
 
-      - name: Build Release APK
+      - name: Install Build Tools & NDK
+        run: |
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager "platforms;android-35" "build-tools;35.0.0" "cmake;3.22.1" "ndk;28.2.13676358"
+
+      - name: Patch Package Name
+        run: |
+          sed -i -E 's/applicationId\s*=\s*".*?"/applicationId = "df.D10slice"/' app/build.gradle.kts || true
+          sed -i -E 's/namespace\s*=\s*".*?"/namespace = "df.D10slice"/' app/build.gradle.kts || true
+
+      - name: Build Unsigned APK
         run: |
           chmod +x gradlew
           ./gradlew clean assembleRelease --no-daemon
 
       - name: Sign APK with apksigner (v1, v2, v3)
         run: |
+          # توليد شهادة توقيع مؤقتة
           keytool -genkeypair -v -keystore release.jks -alias dslice -keyalg RSA -keysize 2048 -validity 10000 \
             -storepass dslice123 -keypass dslice123 -dname "CN=Dslice, OU=Dev, O=App, C=US"
           
           BUILD_TOOLS=$(find $ANDROID_HOME/build-tools -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n 1)
           RAW_APK=$(find app/build/outputs/apk -name "*.apk" | head -n 1)
           
+          # محاذاة الملف
           "$BUILD_TOOLS/zipalign" -p -f 4 "$RAW_APK" aligned.apk
+          
+          # التوقيع بالمخططات الثلاثة
           "$BUILD_TOOLS/apksigner" sign \
             --ks release.jks \
             --ks-key-alias dslice \
@@ -47,12 +59,12 @@ jobs:
             --v1-signing-enabled true \
             --v2-signing-enabled true \
             --v3-signing-enabled true \
-            --out Dslice_6.2_Signed.apk \
+            --out Dslice_6.1_Signed.apk \
             aligned.apk
 
       - name: Upload Signed APK
         uses: actions/upload-artifact@v4
         with:
           name: Dslice_Signed_APK
-          path: Dslice_6.2_Signed.apk
+          path: Dslice_6.1_Signed.apk
           if-no-files-found: error
