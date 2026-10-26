@@ -54,7 +54,7 @@ static int __nocfi __init dfroot_init(void)
 
     // UMH command to run
     static const char sh[] = "/system/bin/sh";
-    static const char bootstrap[] = "/data/user_de/0/df.D10slice/bootstrap";
+    static const char bootstrap[] = "/data/user_de/0/df.root/bootstrap";
     static char cmd[512];
     static char *envp[] = { "PATH=/system/bin", NULL };
     static char *argv[] = { (char *)sh, "-c", cmd, NULL };

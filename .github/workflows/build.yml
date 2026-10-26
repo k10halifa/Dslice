@@ -42,14 +42,6 @@ jobs:
           mkdir -p $GITHUB_WORKSPACE/out
           cp dfroot.ko $GITHUB_WORKSPACE/out/dfroot-${{ matrix.kmi }}.ko
           make clean
-      - name: Prepare Dslice6.3.apk
-        run: |
-          FOUND_APK=$(find app/build/outputs/apk -type f -name "*.apk" | head -n 1)
-          if [ -n "$FOUND_APK" ]; then
-            DIR_PATH=$(dirname "$FOUND_APK")
-            mv -f "$FOUND_APK" "$DIR_PATH/Dslice6.3.apk"
-          fi
-
 
       - name: Upload dfroot.ko
         uses: actions/upload-artifact@v7
@@ -66,19 +58,19 @@ jobs:
       - name: Validate signing config
         if: github.event_name != 'pull_request'
         run: |
-          if [ "${{ secrets.KEYSTORE || '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' }}" = "" ]; then
+          if [ "${{ secrets.KEYSTORE }}" = "" ]; then
             echo "::error::Signing secrets not configured. KEYSTORE secret is required for release builds."
-            echo "Bypassing keystore error and continuing build..."
+            exit 1
           fi
 
       - name: Create signing.properties
         if: github.event_name != 'pull_request'
         run: |
           echo KEYSTORE_FILE=../keystore.jks > signing.properties
-          echo KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD || 'Dslice123456' }} >> signing.properties
-          echo KEY_ALIAS=${{ secrets.KEY_ALIAS || 'dslice' }} >> signing.properties
-          echo KEY_PASSWORD=${{ secrets.KEY_PASSWORD || 'Dslice123456' }} >> signing.properties
-          echo ${{ secrets.KEYSTORE || 'MIIKlAIBAzCCCj4GCSqGSIb3DQEHAaCCCi8EggorMIIKJzCCBa4GCSqGSIb3DQEHAaCCBZ8EggWbMIIFlzCCBZMGCyqGSIb3DQEMCgECoIIFQDCCBTwwZgYJKoZIhvcNAQUNMFkwOAYJKoZIhvcNAQUMMCsEFCrp7Ad0NuUjcwXzzQyU8JzQCxLmAgInEAIBIDAMBggqhkiG9w0CCQUAMB0GCWCGSAFlAwQBKgQQ2H7hPMvFUxCvXUknei+1UwSCBNCBOpkHszNFqDHPauii5qUU0FYmOR35wKHst94uKcb0c2cAHPliTL1QYrikTNcYQP1hY3Mn6LZrZfi61MV2Kpc1nluAbvllh9ltqeKK0yalIHl0W+vu4zMzRwA17avvufWSOb9Kxedm2Wl4zee0SaxhM6fd6K8h+MZ2YSzSAedijYe9NcC1WvkZbBIGN0FNISy9f7KroQe3j1OSPEeA7zGWm5BPY2UvuJ2Oag70lanbT+tkaVEJ140vbBFJ0Kc1oW0ljOt9zAg//59Ug8VMvojpaZC+XQYX4FZymv64WVo4mdZ/YPcQNmq//pVIoIBriNU7dKxYHhWNqHLCegRKIp+MUSEzyGpxPFdyB6Qd0k6nEBHABPaL43Tcy0JtoJM5gQV6Toi7tOaZshyrwPfAk5/7R8X35mvHQLe4mvF6sdXS3NGdlAuRsyPtCHl7gVo1FHqZauETmAgWG/oulsSRbYmGIkXtf4WCSn7aL16oycI383AYB7PWez5CLcvopzC/77IMHb2aNw7Rn5nyqwVHzBRrXm9WRl9/TMg9ECHXy7+IylLK2//TizupuD7cmvPqIzlo7OlruoZSiNvpAt20TtR4AKp65kYFdiH0rqHqEKFAZWBUY5sSODsIT6KBNu9TBR7QKuZ+87zLu5B7pD3tSKprkQkQiJf3ofH9eF6rLfvvvjDPANQwx4GwZs0B9G1e+dhpYlVBoPeECa/Tqf1m0+mEzsViInhVyeRF9c9JL9ttEyKnVPhWTsUWFtmpsZ5s9noeQL5kB2snmaDx6iW0AEiKKnxbc1AnCq3FTTU9qpVqbr11TW6OqJvhC/EynJyKL/FrEmYZjM44M/moK7jT1jfwIPSv5/FFg7vXDjOVEZm4FeKGaQK2zjopkP4NK/+c+UmxMQZH4fKHI71HUx/r8Rc/etSWxlw8aGs7/CqHaOP96K8GPQlXPDBBxN8FYvRekNpXa1PC9aWtN81EdKWj2Yx3qllH7ZGOL4LocRaeLEnkmPeZpfgdVuzhWfvlwqnsKIqybkP5MohKTa/mcqSyypy0TA6yLdShE8AuIby9v4vdhWu3G2le/hdbhlOlk4f3/Y8W87u5QTgpofgxIIdfleAvGZhZ3bT0xDYX5FFuVHgV0L7XmrxrvR5gk3e91vSaD8nrrjNaQN2mWH1v/UXiJDK91VvQLn6V7cn2J4GP2mqnNNwrDK14dkGU+nLArbbUu37gs60HjYxvlRRJA2ujH9WZbC+i1hPxRMD7h7WBDnuQ+3sIOWGJJqi9ZWfs0TkDKjVkS0pgR+nqxNs9eGBc7YXov5hsk1rNSfamM/DpXSidKG/NIS2aNgZwes703koexA+c40J+bUhVL238QvMUh7oUcewC8azm2kPQiOAWBcrT+vGBsLzzr1xD/OH/tzaS/qtpBxPYQswlgM95hQnSlX4fL3LB01fUFz7OclgsaAIzKok234E9YVdyFWypsY1lyvg/ko1/VovMFzGJbu1736UcJDtVK2Rztsov4HzBULxIrxdNksxWMI0riznAYb+KfO9VJqYHej9TVO4pmEb5gwVsrHdk6MSK5vjFh6uj1uG5lMGEt9/S/NVqK0R1+QhZERu5XIvHGcrCso1Fi1ntp+Bh3aOi3dkloBdRoUp+O3cLsTFAMBsGCSqGSIb3DQEJFDEOHgwAZABzAGwAaQBjAGUwIQYJKoZIhvcNAQkVMRQEElRpbWUgMTc5Mjg5MDMxMTcyNTCCBHEGCSqGSIb3DQEHBqCCBGIwggReAgEAMIIEVwYJKoZIhvcNAQcBMGYGCSqGSIb3DQEFDTBZMDgGCSqGSIb3DQEFDDArBBTf78FmHJuMoc45Pt76ULM2IX8MzgICJxACASAwDAYIKoZIhvcNAgkFADAdBglghkgBZQMEASoEEDnxm1Mz5B5bKf9CYpr1vi2AggPgVSqr5+T4um/YD9pjib6PAqKWW1veRemI7IT1kSBM6b3HUTQlcqVaglNd2a4SLYoMuwv9fiRVM1gImRNppk0uXR1VyBbu44KRHDzEzNKvoo9SZpP2E8cNtglTj9O5LSxf0kjTAlpjiZzWH+puD5cI/s8ZIsA6ZgZX4t25R11wnIaFX5gmsU3QilgV2IBp2Cj0AKRKFzj6BB8bmXs3sAvFJ/bxcGGK8rMZj74F6+VduJbtXB3HmWfZvYLQbbPZH834uLwB+Rofr6NiQeCbPXbrp8J1w9K38V/e2TmAwr9eIpuhE3XmiJymzJ3fHdnwMdvc2a7f/e2Jto0C08jahJZP6dpjrzsLAQsNt/j648jWDNc3upliUsJlkL+QwRoTUEDjWHkmSz+UM17S3Zh3BCH0FMS8adhwyzyxrXpQX/bzTFwg/A39NY3tezJLi9eGPdJbJtPofyzBbwQ4hPFBjqAbXIKHDDcMEYxBR9OMj387j+c9AxSD4t4IahyJntGKZ4zJkmEA7gUCVYgtQx0xHJLKaO+hapKwvzuKvsIV/e/pG8F/uImDCYtZA2LjGcuA57mmh/Two9ZmR2U5Q4df0unEMM9XLZ289LxfUJkr4Ia//hnt2z/L8T+2MxJq4RbskBBt+S4nKmI2SAKz2kNSvNvUL4aqfTvMg66zz+3XNekmfy3oD5ajyy1q47DzPs05D0c97Wu27d9zwQ3YiIsPgxQWvI7vdcHGvqCjnlc+CQs37MmE6nEC3FfA/HbLuhAPeh/bqqCxo0WIsLpjy0VNAXGp8BU0e//QVdRh7Wp0agCbdlie/C52/VuCFfBYk+/rHXtFgIGzXlXCvkCNPGzbnWPSDUKEFzqgO+TILt7Cj5aqEv/eDsZdWOj/DylmV2j83sMqBsnIgdxpqWICaPVk8XzMxPwravupPAhXVck+/t+8R4cAV0eeotdRO6fuIgxUn9Kj7o/5CgVl9Y5oip/cbR7eVr6CxhSupyHRDFOKM8bYdDvhAh5xIo+QssUojQQImJz/r5yOu52qwgPnT6hpM06b7/VMoPq65CM/kmiKkXEIovYR7OOCmDV6byjqN8JWsJ6xjKnh0lZPC6u9SznroUe0SagssK29Jb8bYLbsBV/6jFgrNlnRVJy67ef7/ZxxLUHeY0ROh5zavmmTVGf9AELVsJm625SrxzJm3TLmZv8Gs89lNc9bZ65ZH5Ch5qo4BCD3KENYKlbR5sHBCImxP+efKYJJntkbR7RQEbfuwoMDjAnNnXmcbYBHgvAZ/k6ORtHSW0D8wnWB1QO/KlvMG9x3igIfL/Rzle6Zwmm02H0dD60wTTAxMA0GCWCGSAFlAwQCAQUABCBE1NBFFOnzMZLPqig+ywQicgSu3pKFQlTGdqaq32TbeQQUziXjoZlTbGcqfZWm9BJ5PAkTKgUCAicQ' }} | base64 --decode > keystore.jks
+          echo KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }} >> signing.properties
+          echo KEY_ALIAS=${{ secrets.KEY_ALIAS }} >> signing.properties
+          echo KEY_PASSWORD=${{ secrets.KEY_PASSWORD }} >> signing.properties
+          echo ${{ secrets.KEYSTORE }} | base64 --decode > keystore.jks
 
       - name: Download DF LKMs
         uses: actions/download-artifact@v7
@@ -105,12 +97,13 @@ jobs:
       - name: Upload DFRoot APK
         uses: actions/upload-artifact@v7
         with:
-          name: Dslice6.3
+          name: DFRoot
           path: |
-            app/build/outputs/apk/**/Dslice6.3.apk
+            app/build/outputs/apk/release/DFRoot_*.apk
+            app/build/outputs/apk/debug/DFRoot_*.apk
 
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
         with:
-          files: app/build/outputs/apk/**/Dslice6.3.apk
+          files: app/build/outputs/apk/release/DFRoot_*.apk
